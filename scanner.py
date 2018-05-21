@@ -11,8 +11,9 @@ from skimage.filters import threshold_local
 
 from PIL import Image
 import pytesseract
-pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files (x86)/Tesseract-OCR/tesseract.exe'
+#pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files (x86)/Tesseract-OCR/tesseract.exe'
 
+path = r'd:\PROJECTS\scanner\videos'
 debug = False
 
 def helper_imshow(name, image):
@@ -220,7 +221,6 @@ def feeder(video):
     return text
 
 def process():
-    path = r'd:\PROJECTS\maruthi_utils\scanner\videos'
     for v in os.listdir(path):
         new_path = os.path.join(path, v)
         text = feeder(new_path)
@@ -228,8 +228,6 @@ def process():
 
 
 def process_image():
-
-    path = 'd:\PROJECTS\maruthi_utils\scanner\images'
     images = os.listdir(path)
     for image in images:
         new_path = os.path.join(path, image)
