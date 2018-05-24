@@ -109,7 +109,7 @@ def extract_characters(img):
         area = w * h
         center = (x + w / 2, y + h / 2)
         # if (area > 700) and (area < 1200):
-        if (w > 20 and w < 40) and (h > 30 and h < 40):
+        if (w > 15 and w < 40) and (h > 30 and h < 40):
             x, y, w, h = x - 4, y - 4, w + 8, h + 8
             bounding_boxes.append((center, (x, y, w, h)))
             cv2.rectangle(char_mask, (x, y), (x + w, y + h), 255, -1)
@@ -173,7 +173,7 @@ def feeder(video):
     return text
 
 
-def process_videos(path):
+def process_video(path):
     print(path)
     if not path:
         print('Accessing data from database ...')
@@ -191,8 +191,8 @@ def process_videos(path):
             print(text)
 
 
-def process_images(path):
-    source_path = 'd:\PROJECTS\maruthi_utils\scanner\images'
+def process_image():
+    path = 'd:\PROJECTS\maruthi_utils\scanner\images'
     images = os.listdir(path)
     for image in images:
         new_path = os.path.join(path, image)
@@ -213,6 +213,6 @@ if __name__ == '__main__':
     args = vars(ap.parse_args())
     path = args['path']
     if process_videos:
-        process_videos(path)
+        process_video(path)
     else:
-        process_images(path)
+        process_image()
