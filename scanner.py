@@ -6,7 +6,7 @@ import argparse
 import cv2
 import imutils
 import config
-from utils import helper_showwait
+from utils import helper_showwait, is_digits, is_letters
 from database import select, update, insert
 
 from transform import four_point_transform
@@ -18,7 +18,7 @@ import pytesseract
 path = config.source_path
 
 process_videos = config.process_videos
-pytesseract.pytesseract.tesseract_cmd = config.tesseract_command_line
+#pytesseract.pytesseract.tesseract_cmd = config.tesseract_command_line
 debug = config.debug
 
 
@@ -133,7 +133,7 @@ def extract_characters(img):
         0,
         255,
         cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
-    clean = cv2.GaussianBlur(clean, (5, 5), 0)
+    clean = cv2.GaussianBlur(clean, (7, 7), 0)
     helper_showwait('Final Image to tesseract', clean)
     return clean, characters
 
@@ -147,6 +147,12 @@ def image_to_text(image):
 
 
 def feeder(video):
+    def validate(value):
+        if len(value) == 9:
+            if is_letters(value[:3]):
+                if is_digits(value[3:]):
+                    return value
+        return
     text = None
     camera = cv2.VideoCapture(r'%s' % (video))
     # keep looping over the frames
@@ -164,6 +170,7 @@ def feeder(video):
         if len(clean_img) > 0:
             clean_img = imutils.resize(clean_img, width=400, height=1200)
             text = image_to_text(clean_img)
+            text = validate(text)
             if text:
                 break
 
