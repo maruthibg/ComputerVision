@@ -1,6 +1,6 @@
 from configparser import ConfigParser
 
-debug = True
+debug = False
 process_videos = True
 source_path = 'd:\PROJECTS\maruthi_utils\scanner\videos'
 tesseract_command_line = 'C:/Program Files (x86)/Tesseract-OCR/tesseract.exe'
