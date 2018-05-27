@@ -9,6 +9,7 @@ from transform import four_point_transform
 import pyzbar.pyzbar as pyzbar
 
 from database import get_assets, update
+from utils import helper_showwait, is_digits, is_letters, validate
 
 
 class Packet():
@@ -40,10 +41,8 @@ def capture_frame(image):
     edged = cv2.Canny(gray, 75, 200)
 
     # show the original image and the edge detected image
-    cv2.imshow("Image", image)
-    cv2.imshow("Edged", edged)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    helper_showwait("Image", image)
+    helper_showwait("Edged", edged)
     # find the contours in the edged image, keeping only the
     # largest ones, and initialize the screen contour
     cnts = cv2.findContours(
@@ -67,9 +66,7 @@ def capture_frame(image):
 
     # show the contour (outline) of the piece of paper
     cv2.drawContours(image, [screenCnt], -1, (0, 255, 0), 2)
-    cv2.imshow("Outline", image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    helper_showwait("Outline", image)
 
     # apply the four point transform to obtain a top-down
     # view of the original image
@@ -77,8 +74,7 @@ def capture_frame(image):
 
     # show the original and scanned images
     scanned = imutils.resize(warped, height=200)
-    cv2.imshow("Scanned", scanned)
-    cv2.waitKey(0)
+    helper_showwait("Scanned", scanned)
     return scanned
 
 
@@ -124,9 +120,8 @@ def skew(image):
 
     # show the output image
     print("[INFO] angle: {:.3f}".format(angle))
-    cv2.imshow("Input", image)
-    cv2.imshow("Rotated", rotated)
-    cv2.waitKey(0)
+    helper_showwait("Input", image)
+    helper_showwait("Rotated", rotated)
 
 
 def bar_code_detect(image):
