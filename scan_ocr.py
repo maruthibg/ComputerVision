@@ -15,8 +15,6 @@ from skimage.filters import threshold_local
 from PIL import Image
 import pytesseract
 
-path = config.source_path
-
 process_videos = config.process_videos
 pytesseract.pytesseract.tesseract_cmd = config.tesseract_command_line
 debug = config.debug
