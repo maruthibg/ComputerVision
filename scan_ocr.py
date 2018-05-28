@@ -7,7 +7,7 @@ import cv2
 import imutils
 import config
 from utils import helper_showwait, is_digits, is_letters, validate, os_type
-from database import get_assets, update
+from database import get_assets, update, failure
 
 from transform import four_point_transform
 from skimage.filters import threshold_local
@@ -184,7 +184,6 @@ def capture_video(video):
 
 
 def capture_video(video):
-    packet = None
     camera = cv2.VideoCapture(r'%s' % (video))
     # keep looping over the frames
 
@@ -226,12 +225,13 @@ def process(path=None):
         if assets:
             for asset in get_assets():
                 video = os.path.join(asset.path, asset.name)
-                string = capture_video(video)
-                if string:
-                    update(asset.id, string)
-                else:
-                    failure(asset.id)
-                print(string)
+                if video.endswith('.md') and video.endswith('.txt'):
+                    string = capture_video(video)
+                    if string:
+                        print(string)
+                        update(asset.id, string)
+                    else:
+                        failure(asset.id)
             return string
 
 
