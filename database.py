@@ -65,7 +65,7 @@ def failure(key):
     try:
         cursor, conn = get_cursor()
         cursor.execute(
-            "UPDATE Asset set assetstatus = 'Failure' where id = '%s'" %
+            "UPDATE Asset set assetstatus = 'Failure' where assetid = '%s'" %
             (key))
         conn.commit
         conn.close()
