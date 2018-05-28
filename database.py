@@ -28,59 +28,38 @@ def get_cursor():
 
 def get_assets():
     results = []
-    try:
-        cursor, conn = get_cursor()
-        cursor.execute(
-            "SELECT assetid, assetname, assetpath, assetstatus FROM Asset where \
-            assetstatus = 'To be Processed'")
-        records = cursor.fetchall()
-        
-        for record in records:
-            p = Packet()
-            p.id = record[0]
-            p.name = record[1].strip()
-            p.path = record[2].strip()
-            results.append(p)
-    finally:
-        if conn is not None:
-            conn.close()
-            print('Database connection closed.')
+    cursor, conn = get_cursor()
+    cursor.execute(
+        "SELECT assetid, assetname, assetpath, assetstatus FROM Asset where \
+        assetstatus = 'To be Processed'")
+    records = cursor.fetchall()
+    
+    for record in records:
+        p = Packet()
+        p.id = record[0]
+        p.name = record[1].strip()
+        p.path = record[2].strip()
+        results.append(p)
+    cursor.close()
+    conn.close()
     return results
 
 def update(key, value):
-    try:
-        cursor, conn = get_cursor()
-        cursor.execute(
-            "UPDATE Asset set assetidentificationkey = '%s' where id = '%s'" %
-            (value, key))
-        conn.commit
-        conn.close()
-    finally:
-        if conn is not None:
-            conn.close()
-            print('Database connection closed.')
+    cursor, conn = get_cursor()
+    cursor.execute(
+        "" %
+        (value, key))
+    statement = """UPDATE Asset set assetidentificationkey = '%s' where assetid = '%s'""" %(value, key)
+    print(statement)    
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 def failure(key):
-    try:
-        cursor, conn = get_cursor()
-        statement = """UPDATE Asset set assetstatus='%s' where assetid='%s'""" %('Failure', key)
-        print(statement)
-        cursor.execute(statement)
-        conn.commit
-        conn.close()
-    finally:
-        if conn is not None:
-            conn.close()
-            print('Database connection closed.')
-
-def insert():
-    try:
-        cursor, conn = get_cursor()
-        cursor.execute("INSERT INTO Asset (id,assetname,assetpath,status,assetidentificationkey) \
-        VALUES (1, 'laptop_1.mp4', 'D:\PROJECTS\maruthi_utils\scanner\videos', 'To be Processed', '')")
-        conn.commit
-        conn.close()
-    finally:
-        if conn is not None:
-            conn.close()
-            print('Database connection closed.')
+    cursor, conn = get_cursor()
+    statement = """UPDATE Asset set assetstatus='%s' where assetid='%s'""" %('Failure', key)
+    print(statement)
+    cursor.execute(statement)
+    conn.commit()
+    cursor.close()
+    conn.close()
