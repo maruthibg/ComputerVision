@@ -184,6 +184,7 @@ def capture_video(video):
 
 
 def capture_video(video):
+    packet = None
     camera = cv2.VideoCapture(r'%s' % (video))
     # keep looping over the frames
 
@@ -221,6 +222,7 @@ def process(path=None):
     else:
         print('Processing from database ....')
         assets = get_assets()
+        print('All assets -  %s'%(str(assets)))
         if assets:
             for asset in get_assets():
                 video = os.path.join(asset.path, asset.name)
