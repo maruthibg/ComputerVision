@@ -44,12 +44,10 @@ def get_assets():
     conn.close()
     return results
 
-def update(key, value):
+def update(id, value, status='Processed'):
     cursor, conn = get_cursor()
-    cursor.execute(
-        "" %
-        (value, key))
-    statement = """UPDATE Asset set assetidentificationkey = '%s' where assetid = '%s'""" %(value, key)
+    statement = """UPDATE Asset set assetidentificationkey='%s', assetstatus='%s where assetid='%s'""" %(value, id, status)
+    cursor.execute(statement)
     print(statement)    
     conn.commit()
     cursor.close()
