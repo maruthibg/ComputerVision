@@ -1,6 +1,7 @@
 import cv2
 import config
 import re
+import os
 
 debug = config.debug
 
@@ -37,3 +38,7 @@ def validate(value):
         if is_letters(value[:3]):
             if is_digits(value[3:]):
                 return value
+
+
+def os_type():
+    return os.name
