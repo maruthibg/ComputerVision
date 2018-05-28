@@ -79,7 +79,7 @@ def capture_frame(image):
     #
     if len(clean_img) > 0:
         #clean_img = imutils.resize(clean_img, height=1200)
-        print(ocr_text(clean_img))
+        #print(ocr_text(clean_img))
         string = validate(ocr_text(clean_img))
         return string
     return
@@ -225,14 +225,17 @@ def process(path=None):
         if assets:
             for asset in get_assets():
                 video = os.path.join(asset.path, asset.name)
-                if video.endswith('.md') and video.endswith('.txt'):
+                print('Processing video file - %s'%(video))
+                if (not video.endswith('.md')) or (not video.endswith('.txt')):
                     string = capture_video(video)
                     if string:
-                        print(string)
                         update(asset.id, string)
+                        print(string)
+                        return string
                     else:
                         failure(asset.id)
-            return string
+                else:
+                    failure(asset.id)                
 
 
 if __name__ == '__main__':
