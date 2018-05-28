@@ -31,12 +31,12 @@ def get_assets():
         results = []
         cursor, conn = get_cursor()
         cursor.execute(
-            "SELECT id, assetname, assetpath, assetstatus FROM Asset where \
+            "SELECT assetid, assetname, assetpath, assetstatus FROM Asset where \
             assetstatus = 'To be Processed'")
         records = cursor.fetchall()
         p = Packet()
         for record in records:
-            p.id = record[0].strip()
+            p.id = record[0]
             p.name = record[1].strip()
             p.path = record[2].strip()
             results.append(p)
