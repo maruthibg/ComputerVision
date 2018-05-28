@@ -15,7 +15,6 @@ from skimage.filters import threshold_local
 from PIL import Image
 import pytesseract
 
-process_videos = config.process_videos
 pytesseract.pytesseract.tesseract_cmd = config.tesseract_command_line
 debug = config.debug
 
@@ -71,13 +70,13 @@ def capture_frame(image):
     warped = (warped > T).astype("uint8") * 255
 
     # show the original and scanned images
-    warped = imutils.resize(warped.copy(), width=500, height=500)
+    warped = imutils.resize(warped.copy(), height=500)
     helper_showwait("warped", warped)
     #
     clean_img, chars = extract_characters(warped)
     #
     if len(clean_img) > 0:
-        clean_img = imutils.resize(clean_img, width=400, height=1200)
+        #clean_img = imutils.resize(clean_img, height=1200)
         string = validate(ocr_text(clean_img))
         return string
     return
@@ -107,7 +106,7 @@ def extract_characters(img):
         area = w * h
         center = (x + w / 2, y + h / 2)
         # if (area > 700) and (area < 1200):
-        if (w > 15 and w < 40) and (h > 30 and h < 40):
+        if (w > 50 and w < 90) and (h > 50 and h < 100):
             x, y, w, h = x - 4, y - 4, w + 8, h + 8
             bounding_boxes.append((center, (x, y, w, h)))
             cv2.rectangle(char_mask, (x, y), (x + w, y + h), 255, -1)
@@ -131,9 +130,18 @@ def extract_characters(img):
         0,
         255,
         cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
-    clean = cv2.GaussianBlur(clean, (1, 1), 0)
-    helper_showwait('Final Image to tesseract', clean)
-    return clean, characters
+    clean = cv2.GaussianBlur(clean, (7, 7), 0)
+    kernel = np.ones((2,2), np.uint8)
+    erode = cv2.erode(clean, kernel, iterations=10)
+    helper_showwait('1', erode)
+    
+    #dilate = cv2.dilate(erode, kernel, iterations=3)
+    #helper_showwait('2', dilate)
+    
+    #clean = cv2.GaussianBlur(dilate, (5, 5), 0)
+    #helper_showwait('3', clean)
+
+    return erode, characters
 
 
 def ocr_text(image):
@@ -143,25 +151,45 @@ def ocr_text(image):
     os.remove(filename)
     return text
 
+"""
+def capture_video(video):
+    camera = cv2.VideoCapture(r'%s' % (video))
+    # keep looping over the frames
+    
+    camera.set(1, 2)
+    # grab the current frame
+    (grabbed, frame) = camera.read()
+
+    try:
+        packet = capture_frame(frame)
+    except BaseException:
+        packet = None
+    
+    # cleanup the camera and close any open windows
+    camera.release()
+    cv2.destroyAllWindows()
+    return packet
+"""
 
 def capture_video(video):
     camera = cv2.VideoCapture(r'%s' % (video))
     # keep looping over the frames
+    
+    #camera.set(1, 2)
     while True:
         # grab the current frame
         (grabbed, frame) = camera.read()
-        frame = imutils.resize(frame, width=800)
-
+    
         # check to see if we have reached the end of the
         # video
         if not grabbed:
             break
-
+    
         try:
             packet = capture_frame(frame)
         except BaseException:
             packet = None
-        if string:
+        if packet:
             break
 
     # cleanup the camera and close any open windows
@@ -184,6 +212,7 @@ def process(path=None):
             string = capture_video(video)
             update(asset.id, string)
             print(string)
+    return string
 
 
 if __name__ == '__main__':
