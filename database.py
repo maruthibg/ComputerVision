@@ -27,26 +27,25 @@ def get_cursor():
 
 
 def get_assets():
+    results = []
     try:
-        results = []
         cursor, conn = get_cursor()
         cursor.execute(
             "SELECT assetid, assetname, assetpath, assetstatus FROM Asset where \
             assetstatus = 'To be Processed'")
         records = cursor.fetchall()
-        p = Packet()
+        
         for record in records:
+            p = Packet()
             p.id = record[0]
             p.name = record[1].strip()
             p.path = record[2].strip()
             results.append(p)
-        conn.close()
-        return results
     finally:
         if conn is not None:
             conn.close()
             print('Database connection closed.')
-
+    return results
 
 def update(key, value):
     try:
