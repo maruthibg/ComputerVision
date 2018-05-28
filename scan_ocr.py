@@ -225,7 +225,10 @@ def process(path=None):
             for asset in get_assets():
                 video = os.path.join(asset.path, asset.name)
                 string = capture_video(video)
-                update(asset.id, string)
+                if string:
+                    update(asset.id, string)
+                else:
+                    failure(asset.id)
                 print(string)
             return string
 
