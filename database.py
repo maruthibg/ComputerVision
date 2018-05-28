@@ -46,7 +46,7 @@ def get_assets():
 
 def update(id, value, status='Processed'):
     cursor, conn = get_cursor()
-    statement = """UPDATE Asset set assetidentificationkey='%s', assetstatus='%s where assetid='%s'""" %(value, id, status)
+    statement = """UPDATE Asset set assetidentificationkey='%s', assetstatus='%s' where assetid='%s'""" %(value, status, id)
     cursor.execute(statement)
     print(statement)    
     conn.commit()
