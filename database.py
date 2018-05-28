@@ -1,5 +1,6 @@
 import psycopg2
 from config import config
+from utils import Packet
 
 
 def connect():
@@ -25,15 +26,22 @@ def get_cursor():
     return cursor, conn
 
 
-def select():
+def get_assets():
     try:
+        results = []
         cursor, conn = get_cursor()
         cursor.execute(
-            "SELECT id, assetname, assetpath, status FROM Asset where status = 'To be Processed'")
+            "SELECT id, assetname, assetpath, assetstatus FROM Asset where \
+            assetstatus = 'To be Processed'")
         records = cursor.fetchall()
-        records = (i for i in records)
+        p = Packet()
+        for record in records:
+            p.id = record[0].strip()
+            p.name = record[1].strip()
+            p.path = record[2].strip()
+            results.append(p)
         conn.close()
-        return records
+        return results
     finally:
         if conn is not None:
             conn.close()
@@ -44,8 +52,8 @@ def update(id):
     try:
         cursor, conn = get_cursor()
         cursor.execute(
-            "UPDATE Asset set out = '%s' where id = '%s'" %
-            (out, id))
+            "UPDATE Asset set assetidentificationkey = '%s' where id = '%s'" %
+            (key, id))
         conn.commit
         conn.close()
     finally:
