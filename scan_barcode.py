@@ -208,6 +208,7 @@ def process(path=None):
             string = capture_video(video)
             update(asset.id, string)
             print(string)
+    return string
 
 
 if __name__ == '__main__':
