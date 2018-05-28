@@ -79,6 +79,7 @@ def capture_frame(image):
     #
     if len(clean_img) > 0:
         #clean_img = imutils.resize(clean_img, height=1200)
+        print(ocr_text(clean_img))
         string = validate(ocr_text(clean_img))
         return string
     return
@@ -140,7 +141,7 @@ def extract_characters(img):
     else:
         clean = cv2.GaussianBlur(clean, (7, 7), 0)
         kernel = np.ones((2, 2), np.uint8)
-        erode = cv2.erode(clean, kernel, iterations=2)
+        erode = cv2.erode(clean, kernel, iterations=3)
 
     helper_showwait('1', erode)
 
@@ -198,7 +199,7 @@ def capture_video(video):
 
         try:
             packet = capture_frame(frame)
-        except BaseException:
+        except:
             packet = None
         if packet:
             break
@@ -216,14 +217,17 @@ def process(path=None):
             video = os.path.join(path, name)
             string = capture_video(video)
             print(string)
+        return string
     else:
         print('Processing from database ....')
-        for asset in get_assets():
-            video = os.path.join(asset.path, asset.name)
-            string = capture_video(video)
-            update(asset.id, string)
-            print(string)
-    return string
+        assets = get_assets()
+        if assets:
+            for asset in get_assets():
+                video = os.path.join(asset.path, asset.name)
+                string = capture_video(video)
+                update(asset.id, string)
+                print(string)
+            return string
 
 
 if __name__ == '__main__':
