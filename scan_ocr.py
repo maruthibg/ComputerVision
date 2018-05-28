@@ -6,7 +6,7 @@ import argparse
 import cv2
 import imutils
 import config
-from utils import helper_showwait, is_digits, is_letters, validate
+from utils import helper_showwait, is_digits, is_letters, validate, os_type
 from database import get_assets, update
 
 from transform import four_point_transform
@@ -15,7 +15,9 @@ from skimage.filters import threshold_local
 from PIL import Image
 import pytesseract
 
-pytesseract.pytesseract.tesseract_cmd = config.tesseract_command_line
+if os_type() == 'nt':
+    pytesseract.pytesseract.tesseract_cmd = config.tesseract_command_line
+
 debug = config.debug
 
 
@@ -130,14 +132,21 @@ def extract_characters(img):
         0,
         255,
         cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
-    clean = cv2.GaussianBlur(clean, (7, 7), 0)
-    kernel = np.ones((2,2), np.uint8)
-    erode = cv2.erode(clean, kernel, iterations=10)
+
+    if os_type() == 'nt':
+        clean = cv2.GaussianBlur(clean, (7, 7), 0)
+        kernel = np.ones((2, 2), np.uint8)
+        erode = cv2.erode(clean, kernel, iterations=10)
+    else:
+        clean = cv2.GaussianBlur(clean, (7, 7), 0)
+        kernel = np.ones((2, 2), np.uint8)
+        erode = cv2.erode(clean, kernel, iterations=2)
+
     helper_showwait('1', erode)
-    
+
     #dilate = cv2.dilate(erode, kernel, iterations=3)
     #helper_showwait('2', dilate)
-    
+
     #clean = cv2.GaussianBlur(dilate, (5, 5), 0)
     #helper_showwait('3', clean)
 
@@ -151,11 +160,12 @@ def ocr_text(image):
     os.remove(filename)
     return text
 
+
 """
 def capture_video(video):
     camera = cv2.VideoCapture(r'%s' % (video))
     # keep looping over the frames
-    
+
     camera.set(1, 2)
     # grab the current frame
     (grabbed, frame) = camera.read()
@@ -164,27 +174,28 @@ def capture_video(video):
         packet = capture_frame(frame)
     except BaseException:
         packet = None
-    
+
     # cleanup the camera and close any open windows
     camera.release()
     cv2.destroyAllWindows()
     return packet
 """
 
+
 def capture_video(video):
     camera = cv2.VideoCapture(r'%s' % (video))
     # keep looping over the frames
-    
+
     #camera.set(1, 2)
     while True:
         # grab the current frame
         (grabbed, frame) = camera.read()
-    
+
         # check to see if we have reached the end of the
         # video
         if not grabbed:
             break
-    
+
         try:
             packet = capture_frame(frame)
         except BaseException:
