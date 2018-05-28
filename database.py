@@ -48,12 +48,12 @@ def get_assets():
             print('Database connection closed.')
 
 
-def update(id):
+def update(key, value):
     try:
         cursor, conn = get_cursor()
         cursor.execute(
             "UPDATE Asset set assetidentificationkey = '%s' where id = '%s'" %
-            (key, id))
+            (value, key))
         conn.commit
         conn.close()
     finally:
@@ -61,6 +61,18 @@ def update(id):
             conn.close()
             print('Database connection closed.')
 
+def failure(key):
+    try:
+        cursor, conn = get_cursor()
+        cursor.execute(
+            "UPDATE Asset set assetstatus = 'Failure' where id = '%s'" %
+            (key))
+        conn.commit
+        conn.close()
+    finally:
+        if conn is not None:
+            conn.close()
+            print('Database connection closed.')
 
 def insert():
     try:
