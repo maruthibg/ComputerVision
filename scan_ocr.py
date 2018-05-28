@@ -221,20 +221,21 @@ def process(path=None):
     else:
         print('Processing from database ....')
         assets = get_assets()
-        print('All assets -  %s'%(str(assets)))
         if assets:
             for asset in get_assets():
                 video = os.path.join(asset.path, asset.name)
-                print('Processing video file - %s'%(video))
-                if (not video.endswith('.md')) or (not video.endswith('.txt')):
+                if (not video.endswith('.md')):
+                    print('Processing video file - %s'%(video))
                     string = capture_video(video)
                     if string:
                         update(asset.id, string)
                         print(string)
                         return string
                     else:
+                        print('Failed 1')
                         failure(asset.id)
                 else:
+                    print('Failed 2')
                     failure(asset.id)                
 
 
