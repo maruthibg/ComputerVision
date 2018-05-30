@@ -199,16 +199,35 @@ def process(path=None):
         print('Processing from filesystem ...')
         for name in os.listdir(path):
             video = os.path.join(path, name)
-            string = capture_video(video)
-            print(string)
+            if (not video.endswith('.md')):
+                print('Processing video file - %s'%(video))
+                string = capture_video(video)
+                if string:
+                    print(string)
+                else:
+                    print('Failed 1')
+            else:
+                print('Failed 2')
+        return string
     else:
         print('Processing from database ....')
-        for asset in get_assets():
-            video = os.path.join(asset.path, asset.name)
-            string = capture_video(video)
-            update(asset.id, string)
-            print(string)
-    return string
+        assets = get_assets()
+        if assets:
+            for asset in get_assets():
+                video = os.path.join(asset.path, asset.name)
+                if (not video.endswith('.md')):
+                    print('Processing video file - %s'%(video))
+                    string = capture_video(video)
+                    if string:
+                        update(asset.id, string)
+                        print(string)
+                        return string
+                    else:
+                        print('Failed 1')
+                        failure(asset.id)
+                else:
+                    print('Failed 2')
+                    failure(asset.id)
 
 
 if __name__ == '__main__':
