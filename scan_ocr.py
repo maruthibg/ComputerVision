@@ -89,8 +89,8 @@ def capture_frame(image):
 
 def clone(clean):
     results = []
-    blur_points = [3, 5, 7, 9, 11]
-    for iteration in range(2, 11):
+    blur_points = [5, 7, 9, 11]
+    for iteration in range(3, 11):
         for p in blur_points:
             clean = cv2.GaussianBlur(clean, (p, p), 0)
             kernel = np.ones((2, 2), np.uint8)
@@ -123,7 +123,7 @@ def extract_characters(img):
         area = w * h
         center = (x + w / 2, y + h / 2)
         # if (area > 700) and (area < 1200):
-        if (w > 50 and w < 90) and (h > 50 and h < 100):
+        if (w > 40 and w < 90) and (h > 50 and h < 100):
             x, y, w, h = x - 4, y - 4, w + 8, h + 8
             bounding_boxes.append((center, (x, y, w, h)))
             cv2.rectangle(char_mask, (x, y), (x + w, y + h), 255, -1)
@@ -157,6 +157,7 @@ def ocr_text(image):
     text = pytesseract.image_to_string(Image.open(filename))
     os.remove(filename)
     return text
+
 """
 def capture_video(video):
     camera = cv2.VideoCapture(r'%s' % (video))
@@ -204,9 +205,12 @@ def capture_video(video):
     cv2.destroyAllWindows()
     return packet
 
+
+import datetime
 def process(path=None):
     if path:
         print('Processing from filesystem ...')
+        print(datetime.datetime.now())
         for name in os.listdir(path):
             video = os.path.join(path, name)
             if (not video.endswith('.md')):
@@ -218,6 +222,7 @@ def process(path=None):
                     print('Failed 1')
             else:
                 print('Failed 2')
+        print(datetime.datetime.now())
         return string
     else:
         print('Processing from database ....')
