@@ -89,8 +89,8 @@ def capture_frame(image):
 
 def clone(clean):
     results = []
-    blur_points = [1, 3, 5, 7, 9, 11, 13]
-    for iteration in range(0, 11):
+    blur_points = [3, 5, 7, 9, 11]
+    for iteration in range(2, 11):
         for p in blur_points:
             clean = cv2.GaussianBlur(clean, (p, p), 0)
             kernel = np.ones((2, 2), np.uint8)
