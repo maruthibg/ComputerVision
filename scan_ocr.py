@@ -78,11 +78,25 @@ def capture_frame(image):
     clean_img, chars = extract_characters(warped)
     #
     if len(clean_img) > 0:
-        #clean_img = imutils.resize(clean_img, height=1200)
-        #print(ocr_text(clean_img))
-        string = validate(ocr_text(clean_img))
+        clone_imgs = clone(clean_img)
+        for clone_img in clone_imgs:
+            #print('Text from OCR - %s'%ocr_text(img))
+            string = validate(ocr_text(clone_img))
+            if string:
+                break
         return string
-    return
+
+
+def clone(clean):
+    results = []
+    blur_points = [1, 3, 5, 7, 9, 11, 13]
+    for iteration in range(0, 11):
+        for p in blur_points:
+            clean = cv2.GaussianBlur(clean, (p, p), 0)
+            kernel = np.ones((2, 2), np.uint8)
+            erode = cv2.erode(clean, kernel, iterations=iteration)
+            results.append(erode)
+    return results
 
 
 def highlight_characters(img, chars):
@@ -134,24 +148,7 @@ def extract_characters(img):
         255,
         cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
 
-    if os_type() == 'nt':
-        clean = cv2.GaussianBlur(clean, (7, 7), 0)
-        kernel = np.ones((2, 2), np.uint8)
-        erode = cv2.erode(clean, kernel, iterations=10)
-    else:
-        clean = cv2.GaussianBlur(clean, (7, 7), 0)
-        kernel = np.ones((2, 2), np.uint8)
-        erode = cv2.erode(clean, kernel, iterations=3)
-
-    helper_showwait('1', erode)
-
-    #dilate = cv2.dilate(erode, kernel, iterations=3)
-    #helper_showwait('2', dilate)
-
-    #clean = cv2.GaussianBlur(dilate, (5, 5), 0)
-    #helper_showwait('3', clean)
-
-    return erode, characters
+    return clean, characters
 
 
 def ocr_text(image):
@@ -160,8 +157,6 @@ def ocr_text(image):
     text = pytesseract.image_to_string(Image.open(filename))
     os.remove(filename)
     return text
-
-
 """
 def capture_video(video):
     camera = cv2.VideoCapture(r'%s' % (video))
@@ -209,14 +204,20 @@ def capture_video(video):
     cv2.destroyAllWindows()
     return packet
 
-
 def process(path=None):
     if path:
         print('Processing from filesystem ...')
         for name in os.listdir(path):
             video = os.path.join(path, name)
-            string = capture_video(video)
-            print(string)
+            if (not video.endswith('.md')):
+                print('Processing video file - %s'%(video))
+                string = capture_video(video)
+                if string:
+                    print(string)
+                else:
+                    print('Failed 1')
+            else:
+                print('Failed 2')
         return string
     else:
         print('Processing from database ....')
@@ -236,8 +237,7 @@ def process(path=None):
                         failure(asset.id)
                 else:
                     print('Failed 2')
-                    failure(asset.id)                
-
+                    failure(asset.id)
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
