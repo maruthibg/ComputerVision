@@ -210,7 +210,7 @@ import datetime
 def process(path=None):
     if path:
         print('Processing from filesystem ...')
-        print(datetime.datetime.now())
+        print('Starts at : %s'%str(datetime.datetime.now()))
         for name in os.listdir(path):
             video = os.path.join(path, name)
             if (not video.endswith('.md')):
@@ -222,10 +222,11 @@ def process(path=None):
                     print('Failed 1')
             else:
                 print('Failed 2')
-        print(datetime.datetime.now())
+        print('Ends at : %s'%str(datetime.datetime.now()))
         return string
     else:
         print('Processing from database ....')
+        print('Starts at : %s'%str(datetime.datetime.now()))
         assets = get_assets()
         if assets:
             for asset in get_assets():
@@ -243,6 +244,7 @@ def process(path=None):
                 else:
                     print('Failed 2')
                     failure(asset.id)
+        print('Ends at : %s'%str(datetime.datetime.now()))
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
