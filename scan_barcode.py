@@ -4,11 +4,12 @@ import argparse
 import numpy as np
 import cv2
 import imutils
+import config
 
 from transform import four_point_transform
 import pyzbar.pyzbar as pyzbar
 
-from database import get_fail_assets, update
+from database import get_fail_assets, update, failure
 from utils import helper_showwait, is_digits, is_letters, validate
 
 
@@ -223,7 +224,7 @@ def process(path=None):
                     print('Processing video file - %s'%(video))
                     string = capture_video(video)
                     if string:
-                        update(asset.id, string)
+                        update(asset.id, str(string))
                         print(string)
                         return string
                     else:
