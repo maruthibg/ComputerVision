@@ -123,7 +123,8 @@ def extract_characters(img):
         area = w * h
         center = (x + w / 2, y + h / 2)
         # if (area > 700) and (area < 1200):
-        if (w > 40 and w < 90) and (h > 50 and h < 100):
+        
+        if (w > 40 and w < 90) and (h > 50 and h < 100) and (y > 300):
             x, y, w, h = x - 4, y - 4, w + 8, h + 8
             bounding_boxes.append((center, (x, y, w, h)))
             cv2.rectangle(char_mask, (x, y), (x + w, y + h), 255, -1)
@@ -218,8 +219,8 @@ def process(path=None):
         for name in os.listdir(path):
             video = os.path.join(path, name)
             if video.endswith('.pdf'):
-                continue            
-            if not video.endswith('.md'):
+                continue
+            if (not video.endswith('.md')):
                 print('Processing video file - %s'%(video))
                 string = capture_video(video)
                 if string:
@@ -238,8 +239,8 @@ def process(path=None):
             for asset in get_assets():
                 video = os.path.join(asset.path, asset.name)
                 if video.endswith('.pdf'):
-                    continue
-                if not video.endswith('.md'):
+                    continue                
+                if (not video.endswith('.md')):
                     print('Processing video file - %s'%(video))
                     string = capture_video(video)
                     if string:
