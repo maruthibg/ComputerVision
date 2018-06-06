@@ -8,7 +8,7 @@ import imutils
 from transform import four_point_transform
 import pyzbar.pyzbar as pyzbar
 
-from database import get_assets, update
+from database import get_fail_assets, update
 from utils import helper_showwait, is_digits, is_letters, validate
 
 
@@ -172,7 +172,11 @@ def capture_video(video):
     text = None
     camera = cv2.VideoCapture(r'%s' % (video))
     # keep looping over the frames
+    count = 0
     while True:
+        count = count + 1
+        if count > config.maximum_frames:
+            break        
         # grab the current frame
         (grabbed, frame) = camera.read()
         # check to see if we have reached the end of the
@@ -211,9 +215,9 @@ def process(path=None):
         return string
     else:
         print('Processing from database ....')
-        assets = get_assets()
+        assets = get_fail_assets()
         if assets:
-            for asset in get_assets():
+            for asset in assets:
                 video = os.path.join(asset.path, asset.name)
                 if (not video.endswith('.md')):
                     print('Processing video file - %s'%(video))
