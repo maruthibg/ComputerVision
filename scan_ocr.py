@@ -184,7 +184,11 @@ def capture_video(video):
     # keep looping over the frames
 
     #camera.set(1, 2)
+    count = 0
     while True:
+        count = count + 1
+        if count > config.maximum_frames:
+            break
         # grab the current frame
         (grabbed, frame) = camera.read()
 
