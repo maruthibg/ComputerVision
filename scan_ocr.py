@@ -217,7 +217,9 @@ def process(path=None):
         print('Starts at : %s'%str(datetime.datetime.now()))
         for name in os.listdir(path):
             video = os.path.join(path, name)
-            if (not video.endswith('.md') or not video.endswith('.pdf')):
+            if video.endswith('.pdf'):
+                continue            
+            if not video.endswith('.md'):
                 print('Processing video file - %s'%(video))
                 string = capture_video(video)
                 if string:
@@ -235,7 +237,9 @@ def process(path=None):
         if assets:
             for asset in get_assets():
                 video = os.path.join(asset.path, asset.name)
-                if (not video.endswith('.md') or not video.endswith('.pdf')):
+                if video.endswith('.pdf'):
+                    continue
+                if not video.endswith('.md'):
                     print('Processing video file - %s'%(video))
                     string = capture_video(video)
                     if string:
