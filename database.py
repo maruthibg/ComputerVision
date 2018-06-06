@@ -44,6 +44,24 @@ def get_assets():
     conn.close()
     return results
 
+def get_fail_assets():
+    results = []
+    cursor, conn = get_cursor()
+    cursor.execute(
+        "SELECT assetid, assetname, assetpath, assetstatus FROM Asset where \
+        assetstatus = 'Failure'")
+    records = cursor.fetchall()
+    
+    for record in records:
+        p = Packet()
+        p.id = record[0]
+        p.name = record[1].strip()
+        p.path = record[2].strip()
+        results.append(p)
+    cursor.close()
+    conn.close()
+    return results
+
 def update(id, value, status='Processed'):
     cursor, conn = get_cursor()
     statement = """UPDATE Asset set assetidentificationkey='%s', assetstatus='%s' where assetid='%s'""" %(value, status, id)
