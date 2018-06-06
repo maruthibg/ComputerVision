@@ -224,7 +224,7 @@ def process(path=None):
                     print('Processing video file - %s'%(video))
                     string = capture_video(video)
                     if string:
-                        update(asset.id, str(string))
+                        update(asset.id, str(string, 'utf-8'))
                         print(string)
                         return string
                     else:
