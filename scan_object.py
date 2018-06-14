@@ -52,4 +52,4 @@ if __name__ == '__main__':
     enable_imshow = int(args.get("imshow", '0'))
     ooi = args["ooi"]
 
-    process(cwd, executable, script, path, enable_imshow, ooi)
+    process(cwd, executable, script, enable_imshow, ooi)
