@@ -6,3 +6,4 @@ matplotlib
 pytesseract
 pyzbar
 sqlalchemy
+tensorflow==1.5
