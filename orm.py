@@ -18,8 +18,8 @@ class Assets(base):
     assetpath = Column(String)
     assetstatus = Column(String)
     assetidentificationkey = Column(String)
-    assetidentificationkey_1 = Column(String)
-    assetidentificationkey_2 = Column(String)
+    assetidentificationkey2 = Column(String)
+    assetidentificationkey3 = Column(String)
 
 Session = sessionmaker(db)  
 session = Session()
@@ -45,15 +45,14 @@ def get_assets(status=False):
         results.append(p)
     return results
 
-def update(assetid, key, status=''):
+def update(assetid, key, assetidentificationkey='', assetidentificationkey2='', status=''):
     # Update
     asset = session.query(Assets).filter(Assets.assetid==assetid).first()
     if asset:
-        value = asset.assetidentificationkey
-        if value:
-            asset.assetidentificationkey = '%s,%s'%(value, key)
-        else:
+        if assetidentificationkey:
             asset.assetidentificationkey = key
+        if assetidentificationkey2:
+            asset.assetidentificationkey2 = key
         if status:
             asset.assetstatus = status
         session.commit()
