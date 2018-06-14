@@ -3,7 +3,8 @@ import datetime
 import subprocess
 import argparse
 
-from database import get_assets, update, failure
+#from database import get_assets, update, failure
+from orm import get_assets, update, failure
 
 def main(cwd, executable, script, path, enable_imshow, ooi):
     os.chdir(r'%s'%cwd)
@@ -15,23 +16,20 @@ def main(cwd, executable, script, path, enable_imshow, ooi):
 def process(cwd, executable, script, enable_imshow=0, ooi=0):
     print('Processing from database ....')
     print('Starts at : %s'%str(datetime.datetime.now()))
-    assets = get_assets()
+    status = 'To be Processed'
+    assets = get_assets(status=status)
     if assets:
         for asset in assets:
-            video = os.path.join(asset.path, asset.name)
-            if video.endswith('.pdf'):
-                continue                
-            if (not video.endswith('.md')):
-                print('Processing video file - %s'%(video))
-                string = main(cwd, executable, script, video, enable_imshow, ooi)
-                if string:
-                    #update(asset.id, string)
-                    print(string)
-                else:
-                    print('Failed 1')
-                    failure(asset.id)
+            path = os.path.join(asset.path, asset.name)
+            if path.endswith('.pdf') or path.endswith('.md'):
+                continue
+            print('Processing video file - %s'%(path))
+            string = main(cwd, executable, script, path, enable_imshow, ooi)
+            if string:
+                update(asset.id, string, '')
+                print(string)
             else:
-                print('Failed 2')
+                print('Failed 1')
                 failure(asset.id)
     print('Ends at : %s'%str(datetime.datetime.now()))
 
