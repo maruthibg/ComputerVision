@@ -29,7 +29,7 @@ base.metadata.create_all(db)
 # session.add(ledgers)  
 # session.commit()
 
-def get_assets(status):
+def get_assets(status=False):
     results = []
     rows = session.query(Assets)
     if status:
