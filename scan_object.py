@@ -10,7 +10,7 @@ def main(cwd, executable, script, path, enable_imshow, ooi):
     ping = subprocess.Popen(["%s %s -p %s -e %s"%(executable, script, path, enable_imshow)],stdout = subprocess.PIPE,stderr = subprocess.PIPE,shell=True)
     out = ping.communicate()[0]
     output = str(out, 'utf-8')
-    print(output)
+    return output
 
 def process(cwd, executable, script, enable_imshow=0, ooi=0):
     print('Processing from database ....')
@@ -27,7 +27,6 @@ def process(cwd, executable, script, enable_imshow=0, ooi=0):
                 if string:
                     #update(asset.id, string)
                     print(string)
-                    return string
                 else:
                     print('Failed 1')
                     failure(asset.id)
