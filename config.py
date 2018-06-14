@@ -1,7 +1,7 @@
 from configparser import ConfigParser
 
 debug = False
-maximum_frames = 20
+#maximum_frames = -1
 tesseract_command_line = 'C:/Program Files (x86)/Tesseract-OCR/tesseract.exe'
 
 
