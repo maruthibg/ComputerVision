@@ -5,7 +5,7 @@ import argparse
 def main(cwd, executable, script, path, enable_imshow, ooi):
     os.chdir(r'%s'%cwd)
     ping = subprocess.Popen(["%s %s -p %s -e %s"%(executable, script, path, enable_imshow)],stdout = subprocess.PIPE,stderr = subprocess.PIPE,shell=True)
-    out = ping.communicate()
+    out = ping.communicate()[0]
     output = str(out)
     print(output)
 
