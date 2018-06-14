@@ -9,12 +9,10 @@ import config
 from transform import four_point_transform
 import pyzbar.pyzbar as pyzbar
 
-from database import get_fail_assets, update, failure
-from utils import helper_showwait, is_digits, is_letters, validate
+#from database import get_fail_assets, update, failure
+from orm import get_assets, update, failure
 
-
-class Packet():
-    pass
+from utils import helper_showwait, is_digits, is_letters, validate, Packet
 
 
 def decode(im):
@@ -176,8 +174,8 @@ def capture_video(video):
     count = 0
     while True:
         count = count + 1
-        if count > config.maximum_frames:
-            break        
+        #if count > config.maximum_frames:
+            #break        
         # grab the current frame
         (grabbed, frame) = camera.read()
         # check to see if we have reached the end of the
@@ -198,42 +196,36 @@ def capture_video(video):
     cv2.destroyAllWindows()
     return packet
 
+def action(asset, path=''):
+    if asset:
+        path = os.path.join(asset.path, asset.name)
+    print('Processing video file - %s'%(path))
+    value = capture_video(path)
+    if value:
+        string = str(value, 'utf-8')
+        if asset:
+            update(asset.id, string, 'Processed')
+        print('Asset Identification Key : %s'%string)
+        return string
+    else:
+        print('Failed to trace bar code')
+        if asset:
+            failure(asset.id)
+        return False
 
 def process(path=None):
     if path:
         print('Processing from filesystem ...')
-        for name in os.listdir(path):
-            video = os.path.join(path, name)
-            if (not video.endswith('.md')):
-                print('Processing video file - %s'%(video))
-                string = capture_video(video)
-                if string:
-                    print(string)
-                else:
-                    print('Failed 1')
-            else:
-                print('Failed 2')
-        return string
+        action('', path)
     else:
         print('Processing from database ....')
-        assets = get_fail_assets()
+        status = 'To be Processed'
+        assets = get_assets(status=status)
         if assets:
             for asset in assets:
-                video = os.path.join(asset.path, asset.name)
-                if (not video.endswith('.md')):
-                    print('Processing video file - %s'%(video))
-                    string = capture_video(video)
-                    if string:
-                        update(asset.id, str(string, 'utf-8'))
-                        print(string)
-                        return string
-                    else:
-                        print('Failed 1')
-                        failure(asset.id)
-                else:
-                    print('Failed 2')
-                    failure(asset.id)
-
+                if asset.name.endswith('.pdf') or asset.name.endswith('.md'):
+                    continue
+                action(asset)
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
