@@ -219,7 +219,7 @@ def process(path=None):
         action('', path)
     else:
         print('Processing from database ....')
-        status = 'To be Processed'
+        status = 'Processed Stage 1'
         assets = get_assets(status=status)
         if assets:
             for asset in assets:
