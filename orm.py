@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from utils import Packet
 
 db_string = "postgres://postgres:Floorcheck@1234@216.10.249.58:5432/floor_inv"
+#db_string = "postgresql://dev61:pass123@dafslx20/nagel_brijith"
 
 db = create_engine(db_string)  
 base = declarative_base()
@@ -31,12 +32,15 @@ base.metadata.create_all(db)
 
 def get_assets(status):
     results = []
-    rows = session.query(Ledger).filter(Ledger.assetstatus == status)
+    rows = session.query(Ledger)
+    if status:
+        rows = rows.filter(Ledger.assetstatus == status)
     for row in rows:
         p = Packet()
         p.id = row.assetid
         p.name = row.assetname
         p.path = row.assetpath
+        p.status = row.assetstatus
         results.append(p)
     return results
 
