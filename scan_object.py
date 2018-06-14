@@ -3,7 +3,7 @@ import datetime
 import subprocess
 import argparse
 
-from database import get_fail_assets, update, failure
+from database import get_assets, update, failure
 
 def main(cwd, executable, script, path, enable_imshow, ooi):
     os.chdir(r'%s'%cwd)
@@ -15,7 +15,7 @@ def main(cwd, executable, script, path, enable_imshow, ooi):
 def process(cwd, executable, script, enable_imshow=0, ooi=0):
     print('Processing from database ....')
     print('Starts at : %s'%str(datetime.datetime.now()))
-    assets = get_fail_assets()
+    assets = get_assets()
     if assets:
         for asset in assets:
             video = os.path.join(asset.path, asset.name)
