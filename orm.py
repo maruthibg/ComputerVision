@@ -43,13 +43,14 @@ def get_assets(status=False):
         results.append(p)
     return results
 
-def update(assetid, key, status):
+def update(assetid, key, status=''):
     # Update
     asset = session.query(Assets).filter_by(Assets.assetid==assetid).first()
     if asset:
         value = [i.assetidentificationkey for i in asset][0]
         asset.assetidentificationkey = '%s,%s'(value, key)
-        asset.assetstatus = status
+        if status:
+            asset.assetstatus = status
         session.commit()
     
 def failure(assetid, status='Failure'):
