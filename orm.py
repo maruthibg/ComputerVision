@@ -49,7 +49,7 @@ def update(assetid, key, status=''):
     if asset:
         value = asset.assetidentificationkey
         if value:
-            asset.assetidentificationkey = '%s,%s'(value, key)
+            asset.assetidentificationkey = '%s,%s'%(value, key)
         else:
             asset.assetidentificationkey = key
         if status:
