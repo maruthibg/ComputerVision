@@ -11,7 +11,7 @@ db = create_engine(db_string)
 base = declarative_base()
 
 class Assets(base):  
-    __tablename__ = 'Asset'
+    __tablename__ = 'asset'
 
     assetid = Column(String, primary_key=True)
     assetname = Column(String)
@@ -22,7 +22,7 @@ class Assets(base):
 Session = sessionmaker(db)  
 session = Session()
 
-base.metadata.create_all(db)
+#base.metadata.create_all(db)
 
 # Create 
 # ledgers = Ledger(assetid='2', assetname="Doctor Strange", assetpath="Scott Derrickson", assetstatus="2016")  
@@ -57,3 +57,6 @@ def failure(assetid, status='Failure'):
     asset = session.query(Assets).filter_by(Assets.assetid==assetid).first()
     asset.assetstatus = status
     session.commit()
+    
+if __name__ == '__main__':
+    print(get_assets())
