@@ -204,7 +204,7 @@ def action(asset, path=''):
     if value:
         string = str(value, 'utf-8')
         if asset:
-            update(asset.id, string, 'Processed')
+            update(asset.id, string, assetidentificationkey=True, status='Processed')
         print('Asset Identification Key : %s'%string)
         return string
     else:
