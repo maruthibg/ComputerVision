@@ -18,6 +18,8 @@ class Assets(base):
     assetpath = Column(String)
     assetstatus = Column(String)
     assetidentificationkey = Column(String)
+    assetidentificationkey_1 = Column(String)
+    assetidentificationkey_2 = Column(String)
 
 Session = sessionmaker(db)  
 session = Session()
