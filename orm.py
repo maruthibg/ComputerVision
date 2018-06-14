@@ -12,7 +12,7 @@ db = create_engine(db_string)
 base = declarative_base()
 
 class Ledger(base):  
-    __tablename__ = 'floor_inv'
+    __tablename__ = 'Asset'
 
     assetid = Column(String, primary_key=True)
     assetname = Column(String)
