@@ -25,6 +25,7 @@ def process(cwd, executable, script, enable_imshow=0, ooi=0):
                 continue
             print('Processing video file - %s'%(path))
             string = main(cwd, executable, script, path, enable_imshow, ooi)
+            print(string)
             if string:
                 update(asset.id, string, assetidentificationkey2=True, status='Processed')
                 print(string)
