@@ -47,8 +47,11 @@ def update(assetid, key, status=''):
     # Update
     asset = session.query(Assets).filter(Assets.assetid==assetid).first()
     if asset:
-        value = [i.assetidentificationkey for i in asset][0]
-        asset.assetidentificationkey = '%s,%s'(value, key)
+        value = asset.assetidentificationkey
+        if value:
+            asset.assetidentificationkey = '%s,%s'(value, key)
+        else:
+            asset.assetidentificationkey = key
         if status:
             asset.assetstatus = status
         session.commit()
