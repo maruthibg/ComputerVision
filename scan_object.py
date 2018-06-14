@@ -6,7 +6,7 @@ def main(cwd, executable, script, path, enable_imshow, ooi):
     os.chdir(r'%s'%cwd)
     ping = subprocess.Popen(["%s %s -p %s -e %s"%(executable, script, path, enable_imshow)],stdout = subprocess.PIPE,stderr = subprocess.PIPE,shell=True)
     out = ping.communicate()[0]
-    output = str(out)
+    output = str(out, 'utf-8')
     print(output)
 
 if __name__ == '__main__':
