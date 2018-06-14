@@ -6,12 +6,11 @@ from sqlalchemy.orm import sessionmaker
 from utils import Packet
 
 db_string = "postgres://postgres:Floorcheck@1234@216.10.249.58:5432/floor_inv"
-#db_string = "postgresql://dev61:pass123@dafslx20/nagel_brijith"
 
 db = create_engine(db_string)  
 base = declarative_base()
 
-class Ledger(base):  
+class Assets(base):  
     __tablename__ = 'Asset'
 
     assetid = Column(String, primary_key=True)
@@ -32,9 +31,9 @@ base.metadata.create_all(db)
 
 def get_assets(status):
     results = []
-    rows = session.query(Ledger)
+    rows = session.query(Assets)
     if status:
-        rows = rows.filter(Ledger.assetstatus == status)
+        rows = rows.filter(Assets.assetstatus == status)
     for row in rows:
         p = Packet()
         p.id = row.assetid
@@ -46,15 +45,15 @@ def get_assets(status):
 
 def update(assetid, key, status):
     # Update
-    ledger = session.query(Ledger).filter_by(Ledger.assetid==assetid).first()
-    if ledger:
-        value = [i.assetidentificationkey for i in ledger][0]
-        ledger.assetidentificationkey = '%s,%s'(value, key)
-        ledger.assetstatus = status
+    asset = session.query(Assets).filter_by(Assets.assetid==assetid).first()
+    if asset:
+        value = [i.assetidentificationkey for i in asset][0]
+        asset.assetidentificationkey = '%s,%s'(value, key)
+        asset.assetstatus = status
         session.commit()
     
 def failure(assetid, status='Failure'):
     # Update
-    ledger = session.query(Ledger).filter_by(Ledger.assetid==assetid).first()
-    ledger.assetstatus = status
+    asset = session.query(Assets).filter_by(Assets.assetid==assetid).first()
+    asset.assetstatus = status
     session.commit()
