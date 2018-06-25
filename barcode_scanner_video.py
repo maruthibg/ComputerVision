@@ -55,6 +55,11 @@ def process(vs):
                     break                
             else:
                 return text
+            
+def write(value):
+    with open('/root/applis/pafs/ComputerVision/barcode.txt', mode='w') as f:
+        f.write(value)
+        
 
 if __name__ == '__main__':
     # construct the argument parser and parse the arguments
@@ -70,6 +75,7 @@ if __name__ == '__main__':
     time.sleep(2.0)
     text = process(vs)
     print(text)
+    write(text)
     if debug:
         print("[INFO] cleaning up...")
     cv2.destroyAllWindows()
